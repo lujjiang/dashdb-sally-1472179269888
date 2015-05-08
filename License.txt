@@ -1,1 +1,8 @@
-<Replace this text with the license you've chosen for your project.>
+Licensed Materials - Property of IBM Corp. (C) Copyright IBM Corp. 2015
+
+This sample is owned by IBM and is copyrighted and licensed, not sold. The sample is licensed under the terms of the International License Agreement for Non-Warranted Programs. 
+
+See the complete license terms at:
+http://www.ibm.com/software/sla/sladb.nsf/pdf/ilan/$file/ilan_en.pdf
+
+By using the sample, you agree to these terms. 
