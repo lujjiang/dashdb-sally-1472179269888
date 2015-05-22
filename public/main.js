@@ -1,5 +1,5 @@
 // Copyright IBM Corp. 2015  All Rights Reserved.
-// IBM Insights for Twitter Demo App - Beta version
+// IBM Insights for Twitter Demo App
 
 // optimized for speed
 
