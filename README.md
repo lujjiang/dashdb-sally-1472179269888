@@ -1,4 +1,4 @@
-## Overivew
+## Overview
 This sample is intended for IBM Bluemix developers interested in creating
  applications that leverage the Insights for Twitter service.
 A working demo of this app is available at 
