@@ -1,3 +1,4 @@
+var request = require('request');
 exports.listSysTables = function(ibmdb,connString) {
     return function(req, res) {
 
@@ -34,4 +35,52 @@ exports.listSysTables = function(ibmdb,connString) {
 		} );
 	   
 	}
+}
+exports.insightRequest = function(path){
+	return function(req, res){
+		query=req.param("q");
+		console.log(query);
+		request({
+	        method: "GET",
+	        url: insight_host + '/api/v1/messages' + path,
+	        qs: {
+	            q: query,
+	            size: MAX_TWEETS
+	        }
+	    }, function(err, response, data) {
+	        if (err) {
+	            res.send(err).status(400);
+	        } else {
+	            if (response.statusCode == 200) {
+	                try {
+	                    res.json({
+			                query: req.param("q"),
+			                count: data.search.results
+			            });
+	                } catch(e) {
+	                	res.send(e.message).status(500);
+	              //   	res.json({
+			            //     query: req.param("q"),
+			            //     count: data.search.results
+			            // });
+	              //       done({ 
+	              //           error: { 
+	              //               description: e.message
+	              //           },
+	              //           status_code: response.statusCode
+	              //       });
+	                }
+	            } else {
+	            	res.send(data).status(500);
+	                // done({ 
+	                //     error: { 
+	                //         description: data 
+	                //     },
+	                //     status_code: response.statusCode
+	                // });
+	            }
+	        }
+	    });
 	}
+	
+}

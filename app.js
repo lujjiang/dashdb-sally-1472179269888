@@ -46,64 +46,9 @@ var hasConnect = services["dashDB"] ? true : false;
 var connString = "DRIVER={DB2};DATABASE=" + db2.db + ";UID=" + db2.username + ";PWD=" + db2.password + ";HOSTNAME=" + db2.hostname + ";port=" + db2.port;
 
 // callback - done(err, data)
-function insightRequest(path, query, done) {
-    request({
-        method: "GET",
-        url: insight_host + '/api/v1/messages' + path,
-        qs: {
-            q: query,
-            size: MAX_TWEETS
-        }
-    }, function(err, response, data) {
-        if (err) {
-            done(err);
-        } else {
-            if (response.statusCode == 200) {
-                try {
-                    done(null, JSON.parse(data));
-                } catch(e) {
-                    done({ 
-                        error: { 
-                            description: e.message
-                        },
-                        status_code: response.statusCode
-                    });
-                }
-            } else {
-                done({ 
-                    error: { 
-                        description: data 
-                    },
-                    status_code: response.statusCode
-                });
-            }
-        }
-    });
-}
-
-app.get('/api/search', function(req, res) {
-    insightRequest("/search", req.param("q"), function(err, data) {
-        if (err) {
-            res.send(err).status(400);
-        } else {
-            res.json(data);
-        }
-    });
-});
-
-app.get('/api/count', function(req, res) {
-    insightRequest("/count", req.param("q"), function(err, data) {
-        if (err) {
-            res.send(err).status(400);
-        } else {
-            res.json({
-                query: req.param("q"),
-                count: data.search.results
-            });
-        }
-    });
-});
 app.get('/', routes.listSysTables(ibmdb,connString));
+app.get('/api/count', routes.insightRequest('/count'));
+app.get('/api/search', routes.insightRequest('/search'));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
