@@ -43,7 +43,7 @@ var hasConnect = services["dashDB"] ? true : false;
 var connString = "DRIVER={DB2};DATABASE=" + db2.db + ";UID=" + db2.username + ";PWD=" + db2.password + ";HOSTNAME=" + db2.hostname + ";port=" + db2.port;
 
 // callback - done(err, data)
-app.get('/', routes.listSysTables(ibmdb,connString));
+app.get('/db/list', routes.listSysTables(ibmdb,connString));
 app.get('/api/count', routes.count);
 app.get('/api/search', routes.search);
 
