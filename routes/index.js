@@ -1,4 +1,9 @@
 var request = require('request');
+var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
+var insight_host = services["twitterinsights"]
+    ? services["twitterinsights"][0].credentials.url
+    : "https://a5b9de6b-0f07-450b-9881-50a6f717a182:g7Kv6NTchu@cdeservice.mybluemix.net";
+var MAX_TWEETS = 20;
 exports.listSysTables = function(ibmdb,connString) {
     return function(req, res) {
 
@@ -36,51 +41,59 @@ exports.listSysTables = function(ibmdb,connString) {
 	   
 	}
 }
-exports.insightRequest = function(path){
-	return function(req, res){
-		query=req.param("q");
-		console.log(query);
-		request({
-	        method: "GET",
-	        url: insight_host + '/api/v1/messages' + path,
-	        qs: {
-	            q: query,
-	            size: MAX_TWEETS
-	        }
-	    }, function(err, response, data) {
-	        if (err) {
-	            res.send(err).status(400);
-	        } else {
-	            if (response.statusCode == 200) {
-	                try {
-	                    res.json({
-			                query: req.param("q"),
-			                count: data.search.results
-			            });
-	                } catch(e) {
-	                	res.send(e.message).status(500);
-	              //   	res.json({
-			            //     query: req.param("q"),
-			            //     count: data.search.results
-			            // });
-	              //       done({ 
-	              //           error: { 
-	              //               description: e.message
-	              //           },
-	              //           status_code: response.statusCode
-	              //       });
-	                }
-	            } else {
-	            	res.send(data).status(500);
-	                // done({ 
-	                //     error: { 
-	                //         description: data 
-	                //     },
-	                //     status_code: response.statusCode
-	                // });
-	            }
-	        }
-	    });
-	}
+exports.count = function(req, res){
+	insightRequest("/count", req.param("q"), function(err, data) {
+        if (err) {
+            res.send(err).status(400);
+        } else {
+            res.json({
+                query: req.param("q"),
+                count: data.search.results
+            });
+        }
+    });
 	
+}
+exports.search = function(req, res){
+	insightRequest("/search", req.param("q"), function(err, data) {
+	    if (err) {
+	        res.send(err).status(400);
+	    } else {
+	        res.json(data);
+	    }
+    });
+}
+function insightRequest(path, query, done) {
+    request({
+        method: "GET",
+        url: insight_host + '/api/v1/messages' + path,
+        qs: {
+            q: query,
+            size: MAX_TWEETS
+        }
+    }, function(err, response, data) {
+        if (err) {
+            done(err);
+        } else {
+            if (response.statusCode == 200) {
+                try {
+                    done(null, JSON.parse(data));
+                } catch(e) {
+                    done({ 
+                        error: { 
+                            description: e.message
+                        },
+                        status_code: response.statusCode
+                    });
+                }
+            } else {
+                done({ 
+                    error: { 
+                        description: data 
+                    },
+                    status_code: response.statusCode
+                });
+            }
+        }
+    });
 }
