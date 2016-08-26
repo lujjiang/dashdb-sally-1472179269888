@@ -13,7 +13,9 @@ var request = require('request'); //.defaults({
 // setup middleware
 var app = express();
 app.use(app.router);
-app.use(express.bodyParser());
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
 app.use(express.errorHandler());
 app.use(express.static(__dirname + '/public')); //setup static public directory
 
