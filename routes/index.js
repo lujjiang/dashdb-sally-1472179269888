@@ -17,11 +17,12 @@ exports.listSysTables = function(ibmdb,connString) {
 							
 							
 				if ( !err ) { 
-					res.render('tablelist', {
-						"tablelist" : tables,
-						"tableName" : "10 rows from the GOSALESHR.EMPLOYEE table"
+					res.json(tables);
+					// res.render('tablelist', {
+					// 	"tablelist" : tables,
+					// 	"tableName" : "10 rows from the GOSALESHR.EMPLOYEE table"
 						
-					 });
+					//  });
 
 					
 				} else {
