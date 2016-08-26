@@ -6,6 +6,7 @@
 var express = require('express');
 var routes = require('./routes');
 var ibmdb = require('ibm_db');
+var http = require('http');
 var request = require('request'); //.defaults({
 //    strictSSL: false
 // });
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.errorHandler());
+app.use(app.router);
 app.use(express.static(__dirname + '/public')); //setup static public directory
 
 
@@ -103,6 +105,8 @@ app.get('/api/count', function(req, res) {
 });
 app.get('/', routes.listSysTables(ibmdb,connString));
 
-app.listen(port, host);
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
 console.log('App started on port ' + port);
 
